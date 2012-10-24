@@ -1,5 +1,5 @@
-import com.googlecode.mycontainergrid.server;
+import com.googlecode.mycontainergrid.server.*;
 
 Server server = new Server();
 
-server.xpto();
+server.run();
