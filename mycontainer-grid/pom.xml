@@ -3,11 +3,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.googlecode.mycontainergrid</groupId>
+    <parent>
+        <groupId>com.googlecode.mycontainer.grid</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+	<groupId>com.googlecode.mycontainer.grid</groupId>
 	<artifactId>mycontainer-grid</artifactId>
 	<packaging>jar</packaging>
 	<name>mycontainer-grid</name>
-	<version>1.0.0-SNAPSHOT</version>
 
 	<!-- Specify hard-coded project properties here -->
 	<properties>
@@ -57,8 +62,6 @@
 		</dependency>
 	</dependencies>
 
-
-
 	<build>
 		<finalName>mycontainer-grid</finalName>
 		<plugins>
@@ -97,18 +100,6 @@
 				<configuration>
 					<remoteTagging>true</remoteTagging>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>com.googlecode.mycontainer</groupId>
-				<artifactId>maven-mycontainer-plugin</artifactId>
-				<version>${mycontainer.version}</version>
-				<configuration>
-					<script>src/test/resources/mycontainer-start.bsh</script>
-					<includeTests>true</includeTests>
-				</configuration>
-				<dependencies>
-				</dependencies>
 			</plugin>
 		</plugins>
 	</build>

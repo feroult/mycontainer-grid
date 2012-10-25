@@ -6,14 +6,13 @@
 	<display-name>mycontainer-grid-testapp</display-name>
 
 	<servlet>
-		<servlet-name>SimpleVelocityServlet</servlet-name>
-		<servlet-class>br.com.confidencecambio.controller.ExtendedSimpleVelocityServlet</servlet-class>
+		<servlet-name>SimpleServlet</servlet-name>
+		<servlet-class>com.googlecode.mycontainer.grid.testapp.servlet.SimpleServlet</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>SimpleVelocityServlet</servlet-name>
-		<url-pattern>*.html</url-pattern>
-		<url-pattern>*.xml</url-pattern>
+		<url-pattern>*</url-pattern>
 	</servlet-mapping>
 
 	<!--session-config>

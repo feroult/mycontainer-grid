@@ -1,5 +1,0 @@
-import com.googlecode.mycontainergrid.server.*;
-
-Server server = new Server();
-
-server.run();
