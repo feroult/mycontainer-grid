@@ -1,0 +1,5 @@
+import com.googlecode.mycontainergrid.testapp.*;
+
+BootTests boot = new BootTests();
+
+boot.run();
