@@ -9,7 +9,7 @@ public class BootTests {
 
 		MyContainerGrid grid = new MyContainerGrid();
 
-		grid.addWebContext("/test", "src/main/webapp/");
+		grid.addWebContext("/testapp", "src/main/webapp/");
 
 		grid.run();
 

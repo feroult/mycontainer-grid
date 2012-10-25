@@ -1,4 +1,4 @@
-import com.googlecode.mycontainergrid.testapp.*;
+import com.googlecode.mycontainer.grid.testapp.*;
 
 BootTests boot = new BootTests();
 

@@ -88,9 +88,9 @@ public class MyContainerGrid {
 		webServer.setName("WebServer");
 
 		// FIXME ajustar copy and paste do exemplo do mycontainer
-		Realm realm = new Realm("testRealm");
-		realm.config("teste", "pass", new String[] { "admin", "user" });
-		webServer.addRealm(realm);
+		//Realm realm = new Realm("testRealm");
+		//realm.config("teste", "pass", new String[] { "admin", "user" });
+		//webServer.addRealm(realm);
 
 		for (String context : webContexts.keySet()) {
 			ContextWebServer webContext = webServer.createContextWebServer();
