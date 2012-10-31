@@ -15,7 +15,8 @@ public class SimpleServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		resp.getWriter().println("simple servlet");
+		resp.setContentType("text/html");
+		resp.getWriter().println("<span id=\"hello_world\">hello world</span>");
 	}
 
 
