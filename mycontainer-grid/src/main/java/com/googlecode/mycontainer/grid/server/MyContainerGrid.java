@@ -16,7 +16,6 @@ import com.googlecode.mycontainer.jpa.JPAInfoBuilder;
 import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
 import com.googlecode.mycontainer.kernel.deploy.ScannerDeployer;
 import com.googlecode.mycontainer.web.ContextWebServer;
-import com.googlecode.mycontainer.web.Realm;
 import com.googlecode.mycontainer.web.jetty.JettyServerDeployer;
 
 public class MyContainerGrid {
