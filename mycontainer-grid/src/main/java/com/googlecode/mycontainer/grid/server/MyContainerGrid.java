@@ -24,6 +24,8 @@ public class MyContainerGrid {
 
 	Logger logger = Logger.getLogger(MyContainerGrid.class.getName());
 
+
+
 	private Map<String, String> webContexts = new HashMap<String, String>();
 
 	private List<DataSourceSetup> dataSourceSetups = new ArrayList<DataSourceSetup>();
@@ -35,9 +37,7 @@ public class MyContainerGrid {
 
 	public void run(int servers) {
 		try {
-			for( int serverNumber = 1; serverNumber <= servers; serverNumber++ ) {
-				deploy(serverNumber);
-			}
+			deploy(servers);
 
 			logger.info("mycontainer-grid started");
 
@@ -47,34 +47,34 @@ public class MyContainerGrid {
 		}
 	}
 
-	public void deploy(int serverNumber) throws NamingException {
-		String partition = "-server-" + serverNumber;
+	public void deploy(int servers) throws NamingException {
+		deployMyContainers(servers);
+		deployJetty();
+	}
 
-		ContainerBuilder builder = createContainerBuilder(partition);
-
-		deployVMShutdownHook(builder);
-
-		deployJTA(builder);
-
-		deployDataSources(builder, partition);
-
-		deployJPAs(builder, partition);
-
-		deployStatelessEJBs(builder);
-
+	private void deployJetty() throws NamingException {
+		ContainerBuilder builder = createContainerBuilder("webserver-partition");
 		deployWebServer(builder);
-
 		builder.waitFor();
 	}
 
+	private void deployMyContainers(int servers) throws NamingException {
+		for (int serverNumber = 1; serverNumber <= servers; serverNumber++) {
+			String partition = getPartition(serverNumber);
+			ContainerBuilder builder = createContainerBuilder(partition);
+
+			deployVMShutdownHook(builder);
+			deployJTA(builder);
+			deployDataSources(builder, partition);
+			deployJPAs(builder, partition);
+			deployStatelessEJBs(builder);
+		}
+	}
+
+
 	private ContainerBuilder createContainerBuilder(String partition)
 			throws NamingException {
-		Properties serverProperties = new Properties();
-
-		serverProperties.setProperty("java.naming.factory.initial",
-				"com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory");
-
-		serverProperties.setProperty(MyContainerContextFactory.CONTAINER_PARTITION, partition);
+		Properties serverProperties = getPartitionProperties(partition);
 
 		ContainerBuilder builder = new ContainerBuilder(serverProperties);
 		return builder;
@@ -153,4 +153,22 @@ public class MyContainerGrid {
 	public void addJPASetup(JPASetup setup) {
 		jpaSetups.add(setup);
 	}
+
+	private static String getPartition(int serverNumber) {
+		String partition = "server-" + serverNumber;
+		return partition;
+	}
+
+	public static Properties getPartitionProperties(String partition) {
+		Properties serverProperties = new Properties();
+
+		serverProperties
+				.setProperty("java.naming.factory.initial",
+						"com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory");
+
+		serverProperties.setProperty(
+				MyContainerContextFactory.CONTAINER_PARTITION, partition);
+		return serverProperties;
+	}
+
 }
