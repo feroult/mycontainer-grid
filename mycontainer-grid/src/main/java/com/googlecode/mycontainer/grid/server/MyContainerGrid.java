@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.naming.NamingException;
@@ -14,7 +13,6 @@ import com.googlecode.mycontainer.ejb.SessionInterceptorDeployer;
 import com.googlecode.mycontainer.ejb.StatelessScannableDeployer;
 import com.googlecode.mycontainer.jpa.HibernateJPADeployer;
 import com.googlecode.mycontainer.jpa.JPADeployer;
-import com.googlecode.mycontainer.jpa.JPAInfoBuilder;
 import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
 import com.googlecode.mycontainer.kernel.deploy.ScannerDeployer;
 import com.googlecode.mycontainer.web.ContextWebServer;
@@ -26,12 +24,16 @@ public class MyContainerGrid {
 
 	private Map<String, String> webContexts = new HashMap<String, String>();
 
+	private List<DataSourceSetup> dataSourceSetups = new ArrayList<DataSourceSetup>();
+
+	private List<JPASetup> jpaSetups = new ArrayList<JPASetup>();
+
 	@SuppressWarnings("rawtypes")
 	private List<Class> ejbs = new ArrayList<Class>();
 
 	public void run() {
 		try {
-			xpto();
+			deploy();
 			logger.info("mycontainer-grid started");
 
 		} catch (NamingException e) {
@@ -40,54 +42,63 @@ public class MyContainerGrid {
 		}
 	}
 
-	public void xpto() throws NamingException {
+	public void deploy() throws NamingException {
 		System.setProperty("java.naming.factory.initial",
 				"com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory");
 
 		ContainerBuilder builder = new ContainerBuilder();
 
-		builder.deployVMShutdownHook();
+		deployVMShutdownHook(builder);
 
-		SessionInterceptorDeployer sessionInterceptorDeployer = builder
-				.createDeployer(SessionInterceptorDeployer.class);
-		sessionInterceptorDeployer.deploy();
+		deployJTA(builder);
 
-		builder.deployJTA();
+		deployDataSources(builder);
 
-		DataSourceDeployer ds = builder
-				.createDeployer(DataSourceDeployer.class);
-		ds.setName("TestDS");
-		ds.setDriver("org.hsqldb.jdbcDriver");
-		ds.setUrl("jdbc:hsqldb:mem:.");
-		ds.setUser("sa");
-		ds.deploy();
+		deployJPAs(builder);
 
-		JPADeployer jpa = builder.createDeployer(HibernateJPADeployer.class);
-		JPAInfoBuilder info = (JPAInfoBuilder) jpa.getInfo();
-		info.setPersistenceUnitName("test-pu");
-		info.setJtaDataSourceName("TestDS");
-		// info.addJarFileUrl(com.googlecode.mycontainer.test.ejb.CustomerBean.class);
-		// info.setPersistenceUnitRootUrl(com.googlecode.mycontainer.test.ejb.CustomerBean.class);
-		Properties props = info.getProperties();
-		props.setProperty("hibernate.dialect",
-				"org.hibernate.dialect.HSQLDialect");
-		props.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-		props.setProperty("hibernate.show_sql", "true");
-		jpa.deploy();
-
-		deployEjb(builder);
+		deployStatelessEJBs(builder);
 
 		deployWebServer(builder);
 
 		builder.waitFor();
 	}
 
+	private void deployVMShutdownHook(ContainerBuilder builder) {
+		builder.deployVMShutdownHook();
+	}
+
+	private void deployJTA(ContainerBuilder builder) {
+		SessionInterceptorDeployer sessionInterceptorDeployer = builder
+				.createDeployer(SessionInterceptorDeployer.class);
+		sessionInterceptorDeployer.deploy();
+
+		builder.deployJTA();
+	}
+
+	private void deployDataSources(ContainerBuilder builder) {
+		for (DataSourceSetup setup : dataSourceSetups) {
+			DataSourceDeployer deployer = builder
+					.createDeployer(DataSourceDeployer.class);
+			setup.set(deployer);
+			deployer.deploy();
+		}
+	}
+
+	private void deployJPAs(ContainerBuilder builder) {
+		for (JPASetup setup : jpaSetups) {
+			JPADeployer deployer = builder
+					.createDeployer(HibernateJPADeployer.class);
+			setup.set(deployer);
+			deployer.deploy();
+		}
+	}
+
 	@SuppressWarnings("rawtypes")
-	private void deployEjb(ContainerBuilder builder) {
+	private void deployStatelessEJBs(ContainerBuilder builder) {
 		ScannerDeployer scanner = builder.createDeployer(ScannerDeployer.class);
 		scanner.add(new StatelessScannableDeployer());
 
-		for(Class clazz : ejbs) {
+		for (Class clazz : ejbs) {
 			scanner.scan(clazz);
 		}
 
@@ -99,11 +110,6 @@ public class MyContainerGrid {
 				.createDeployer(JettyServerDeployer.class);
 		webServer.bindPort(8080);
 		webServer.setName("WebServer");
-
-		// FIXME ajustar copy and paste do exemplo do mycontainer
-		//Realm realm = new Realm("testRealm");
-		//realm.config("teste", "pass", new String[] { "admin", "user" });
-		//webServer.addRealm(realm);
 
 		for (String context : webContexts.keySet()) {
 			ContextWebServer webContext = webServer.createContextWebServer();
@@ -119,7 +125,15 @@ public class MyContainerGrid {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void addEjb(Class clazz) {
+	public void addStatelesssEJBToScan(Class clazz) {
 		ejbs.add(clazz);
+	}
+
+	public void addDataSourceSetup(DataSourceSetup setup) {
+		dataSourceSetups.add(setup);
+	}
+
+	public void addJPASetup(JPASetup setup) {
+		jpaSetups.add(setup);
 	}
 }
