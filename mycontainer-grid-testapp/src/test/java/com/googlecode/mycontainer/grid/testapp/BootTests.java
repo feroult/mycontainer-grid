@@ -16,21 +16,36 @@ public class BootTests {
 	public void run() {
 		MyContainerGrid grid = new MyContainerGrid();
 
-		grid.addStatelesssEJBToScan(SimpleService.class);
+		setupStatelessServices(grid);
 
-		HSQLDataSourceSetup hsql = new HSQLDataSourceSetup();
-		hsql.setName("TestDS");
-		grid.addDataSourceSetup(hsql);
+		setupDataSources(grid);
 
+		setupJPAs(grid);
+
+		setupWebContexts(grid);
+
+		grid.run();
+	}
+
+	private void setupWebContexts(MyContainerGrid grid) {
+		grid.addWebContext("/testapp", "src/main/webapp/");
+	}
+
+	private void setupJPAs(MyContainerGrid grid) {
 		JPASetup jpa = new HSQLJPASetup();
 		jpa.setName("test-pu");
 		jpa.setDataSource("TestDS");
 		jpa.addEntityEJBToScan(SimpleEntity.class);
 		grid.addJPASetup(jpa);
-
-		grid.addWebContext("/testapp", "src/main/webapp/");
-
-		grid.run();
 	}
 
+	private void setupDataSources(MyContainerGrid grid) {
+		HSQLDataSourceSetup hsql = new HSQLDataSourceSetup();
+		hsql.setName("TestDS");
+		grid.addDataSourceSetup(hsql);
+	}
+
+	private void setupStatelessServices(MyContainerGrid grid) {
+		grid.addStatelesssEJBToScan(SimpleService.class);
+	}
 }
