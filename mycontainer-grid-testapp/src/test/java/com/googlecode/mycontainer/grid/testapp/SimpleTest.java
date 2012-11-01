@@ -1,5 +1,9 @@
 package com.googlecode.mycontainer.grid.testapp;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
@@ -7,10 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
 
 public class SimpleTest {
 
@@ -18,13 +23,13 @@ public class SimpleTest {
 
 	private FirefoxDriver driver;
 
-	private void setupDriver() {
-		FirefoxProfile profile = new FirefoxProfile();
-		profile.setPreference("intl.accept_languages", "pt-br,en-us,en");
-		profile.setPreference("network.http.phishy-userpass-length", 255);
+	private static long snapShotCount = 1;
 
+	private void setupDriver() {
 		FirefoxBinary binary = new FirefoxBinary();
-		driver = new FirefoxDriver(binary, profile);
+        binary.setEnvironmentProperty("DISPLAY", System.getProperty("xvfb.display", ":99"));
+
+		driver = new FirefoxDriver(binary, null);
 		driver.manage().window().setPosition(new Point(0, 0));
 		driver.manage().window().setSize(new Dimension(1920, 1080));
 	}
@@ -35,8 +40,14 @@ public class SimpleTest {
 	}
 
 	@After
-	public void teardown() {
+	public void teardown() throws IOException {
+        takeSnapShot();
 		driver.close();
+	}
+
+	private void takeSnapShot() throws IOException {
+		File srcFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(srcFile, new File("/tmp/gridsnapshot" + snapShotCount++ + ".png"));
 	}
 
 	@Test
