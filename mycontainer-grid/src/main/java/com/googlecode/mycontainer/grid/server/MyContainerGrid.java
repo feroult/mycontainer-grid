@@ -1,6 +1,8 @@
 package com.googlecode.mycontainer.grid.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -23,6 +25,9 @@ public class MyContainerGrid {
 	Logger logger = Logger.getLogger(MyContainerGrid.class.getName());
 
 	private Map<String, String> webContexts = new HashMap<String, String>();
+
+	@SuppressWarnings("rawtypes")
+	private List<Class> ejbs = new ArrayList<Class>();
 
 	public void run() {
 		try {
@@ -70,14 +75,23 @@ public class MyContainerGrid {
 		props.setProperty("hibernate.show_sql", "true");
 		jpa.deploy();
 
-		ScannerDeployer scanner = builder.createDeployer(ScannerDeployer.class);
-		scanner.add(new StatelessScannableDeployer());
-		// scanner.scan(EntityManagerWrapperBean.class);
-		scanner.deploy();
+		deployEjb(builder);
 
 		deployWebServer(builder);
 
 		builder.waitFor();
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void deployEjb(ContainerBuilder builder) {
+		ScannerDeployer scanner = builder.createDeployer(ScannerDeployer.class);
+		scanner.add(new StatelessScannableDeployer());
+
+		for(Class clazz : ejbs) {
+			scanner.scan(clazz);
+		}
+
+		scanner.deploy();
 	}
 
 	private void deployWebServer(ContainerBuilder builder) {
@@ -102,5 +116,10 @@ public class MyContainerGrid {
 
 	public void addWebContext(String context, String resources) {
 		webContexts.put(context, resources);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void addEjb(Class clazz) {
+		ejbs.add(clazz);
 	}
 }
