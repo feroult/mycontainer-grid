@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.naming.NamingException;
@@ -15,6 +16,7 @@ import com.googlecode.mycontainer.jpa.HibernateJPADeployer;
 import com.googlecode.mycontainer.jpa.JPADeployer;
 import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
 import com.googlecode.mycontainer.kernel.deploy.ScannerDeployer;
+import com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory;
 import com.googlecode.mycontainer.web.ContextWebServer;
 import com.googlecode.mycontainer.web.jetty.JettyServerDeployer;
 
@@ -31,9 +33,12 @@ public class MyContainerGrid {
 	@SuppressWarnings("rawtypes")
 	private List<Class> ejbs = new ArrayList<Class>();
 
-	public void run() {
+	public void run(int servers) {
 		try {
-			deploy();
+			for( int serverNumber = 1; serverNumber <= servers; serverNumber++ ) {
+				deploy(serverNumber);
+			}
+
 			logger.info("mycontainer-grid started");
 
 		} catch (NamingException e) {
@@ -42,25 +47,37 @@ public class MyContainerGrid {
 		}
 	}
 
-	public void deploy() throws NamingException {
-		System.setProperty("java.naming.factory.initial",
-				"com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory");
+	public void deploy(int serverNumber) throws NamingException {
+		String partition = "-server-" + serverNumber;
 
-		ContainerBuilder builder = new ContainerBuilder();
+		ContainerBuilder builder = createContainerBuilder(partition);
 
 		deployVMShutdownHook(builder);
 
 		deployJTA(builder);
 
-		deployDataSources(builder);
+		deployDataSources(builder, partition);
 
-		deployJPAs(builder);
+		deployJPAs(builder, partition);
 
 		deployStatelessEJBs(builder);
 
 		deployWebServer(builder);
 
 		builder.waitFor();
+	}
+
+	private ContainerBuilder createContainerBuilder(String partition)
+			throws NamingException {
+		Properties serverProperties = new Properties();
+
+		serverProperties.setProperty("java.naming.factory.initial",
+				"com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory");
+
+		serverProperties.setProperty(MyContainerContextFactory.CONTAINER_PARTITION, partition);
+
+		ContainerBuilder builder = new ContainerBuilder(serverProperties);
+		return builder;
 	}
 
 	private void deployVMShutdownHook(ContainerBuilder builder) {
@@ -75,20 +92,20 @@ public class MyContainerGrid {
 		builder.deployJTA();
 	}
 
-	private void deployDataSources(ContainerBuilder builder) {
+	private void deployDataSources(ContainerBuilder builder, String partition) {
 		for (DataSourceSetup setup : dataSourceSetups) {
 			DataSourceDeployer deployer = builder
 					.createDeployer(DataSourceDeployer.class);
-			setup.set(deployer);
+			setup.set(deployer, partition);
 			deployer.deploy();
 		}
 	}
 
-	private void deployJPAs(ContainerBuilder builder) {
+	private void deployJPAs(ContainerBuilder builder, String partition) {
 		for (JPASetup setup : jpaSetups) {
 			JPADeployer deployer = builder
 					.createDeployer(HibernateJPADeployer.class);
-			setup.set(deployer);
+			setup.set(deployer, partition);
 			deployer.deploy();
 		}
 	}

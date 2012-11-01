@@ -14,6 +14,6 @@ public abstract class DataSourceSetup {
 		this.name = name;
 	}
 
-	public abstract void set(DataSourceDeployer deployer);
+	public abstract void set(DataSourceDeployer deployer, String partition);
 
 }

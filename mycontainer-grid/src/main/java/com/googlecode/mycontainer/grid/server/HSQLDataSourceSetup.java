@@ -5,10 +5,10 @@ import com.googlecode.mycontainer.datasource.DataSourceDeployer;
 public class HSQLDataSourceSetup extends DataSourceSetup {
 
 	@Override
-	public void set(DataSourceDeployer deployer) {
+	public void set(DataSourceDeployer deployer, String partition) {
 		deployer.setName(getName());
 		deployer.setDriver("org.hsqldb.jdbcDriver");
-		deployer.setUrl("jdbc:hsqldb:mem:.");
+		deployer.setUrl("jdbc:hsqldb:mem:db" + partition);
 		deployer.setUser("sa");
 	}
 

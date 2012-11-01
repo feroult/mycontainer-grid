@@ -24,7 +24,7 @@ public class BootTests {
 
 		setupWebContexts(grid);
 
-		grid.run();
+		grid.run(5);
 	}
 
 	private void setupWebContexts(MyContainerGrid grid) {
