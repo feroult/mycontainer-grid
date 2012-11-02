@@ -57,4 +57,10 @@ public class SimpleTest {
 		Assert.assertTrue("hello word", text.equals("hello world"));
 	}
 
+	@Test
+	public void testCreate() {
+		driver.navigate().to("http://localhost:8080/testapp/create");
+
+	}
+
 }

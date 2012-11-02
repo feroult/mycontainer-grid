@@ -8,7 +8,7 @@ public class HSQLDataSourceSetup extends DataSourceSetup {
 	public void set(DataSourceDeployer deployer, String partition) {
 		deployer.setName(getName());
 		deployer.setDriver("org.hsqldb.jdbcDriver");
-		deployer.setUrl("jdbc:hsqldb:mem:db" + partition);
+		deployer.setUrl("jdbc:hsqldb:mem:" + partition);
 		deployer.setUser("sa");
 	}
 

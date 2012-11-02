@@ -41,7 +41,7 @@ public abstract class JPASetup {
 	public void set(JPADeployer deployer, String partition) {
 		JPAInfoBuilder info = (JPAInfoBuilder) deployer.getInfo();
 
-		setupNames(info, partition);
+		setupNames(info);
 
 		setupEJBs(info);
 
@@ -58,8 +58,8 @@ public abstract class JPASetup {
 		props.setProperty("hibernate.jndi.com.mycontainer.kernel.naming.partition", partition);
 	}
 
-	private void setupNames(JPAInfoBuilder info, String partition) {
-		info.setPersistenceUnitName(getName() + partition);
+	private void setupNames(JPAInfoBuilder info) {
+		info.setPersistenceUnitName(getName());
 		info.setJtaDataSourceName(getDataSource());
 	}
 

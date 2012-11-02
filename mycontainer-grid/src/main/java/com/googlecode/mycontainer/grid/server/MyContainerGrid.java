@@ -18,13 +18,12 @@ import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
 import com.googlecode.mycontainer.kernel.deploy.ScannerDeployer;
 import com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory;
 import com.googlecode.mycontainer.web.ContextWebServer;
+import com.googlecode.mycontainer.web.FilterDesc;
 import com.googlecode.mycontainer.web.jetty.JettyServerDeployer;
 
 public class MyContainerGrid {
 
 	Logger logger = Logger.getLogger(MyContainerGrid.class.getName());
-
-
 
 	private Map<String, String> webContexts = new HashMap<String, String>();
 
@@ -38,8 +37,6 @@ public class MyContainerGrid {
 	public void run(int servers) {
 		try {
 			deploy(servers);
-
-			logger.info("mycontainer-grid started");
 
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -63,14 +60,16 @@ public class MyContainerGrid {
 			String partition = getPartition(serverNumber);
 			ContainerBuilder builder = createContainerBuilder(partition);
 
+			// FIXME faz sentido um hook desses para todos?
 			deployVMShutdownHook(builder);
 			deployJTA(builder);
 			deployDataSources(builder, partition);
 			deployJPAs(builder, partition);
 			deployStatelessEJBs(builder);
+
+			logger.info("mycontainer-grid started - partition: " + partition);
 		}
 	}
-
 
 	private ContainerBuilder createContainerBuilder(String partition)
 			throws NamingException {
@@ -128,10 +127,13 @@ public class MyContainerGrid {
 		webServer.bindPort(8080);
 		webServer.setName("WebServer");
 
+		FilterDesc partitionSelectorFilter = new FilterDesc(PartitionSelectorFilter.class, "/*");
+
 		for (String context : webContexts.keySet()) {
 			ContextWebServer webContext = webServer.createContextWebServer();
 			webContext.setContext(context);
 			webContext.setResources(webContexts.get(context));
+			webContext.getFilters().add(partitionSelectorFilter);
 		}
 
 		webServer.deploy();
@@ -155,8 +157,7 @@ public class MyContainerGrid {
 	}
 
 	private static String getPartition(int serverNumber) {
-		String partition = "server-" + serverNumber;
-		return partition;
+		return "partition" + serverNumber;
 	}
 
 	public static Properties getPartitionProperties(String partition) {

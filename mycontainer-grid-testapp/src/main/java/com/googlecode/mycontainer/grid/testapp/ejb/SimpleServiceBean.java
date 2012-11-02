@@ -1,6 +1,8 @@
 package com.googlecode.mycontainer.grid.testapp.ejb;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import com.googlecode.mycontainer.annotation.MycontainerLocalBinding;
 
@@ -8,9 +10,22 @@ import com.googlecode.mycontainer.annotation.MycontainerLocalBinding;
 @MycontainerLocalBinding(value = SimpleService.JNDI_LOCAL)
 public class SimpleServiceBean implements SimpleService {
 
+	@PersistenceContext(unitName = "test-pu")
+	private EntityManager em;
+
+
 	@Override
 	public String getHelloWorld() {
 		return "hello world";
+	}
+
+	@Override
+	public SimpleEntity create(String mensagem) {
+		SimpleEntity entity = new SimpleEntity();
+		entity.setMensagem(mensagem);
+
+		em.persist(entity);
+		return entity;
 	}
 
 }

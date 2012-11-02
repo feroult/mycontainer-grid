@@ -10,4 +10,6 @@ public interface SimpleService {
 
 	public String getHelloWorld();
 
+	public SimpleEntity create(String mensagem);
+
 }
