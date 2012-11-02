@@ -38,9 +38,10 @@ public class SimpleServlet extends HttpServlet {
 	private void getSimpleEntity(HttpServletRequest req, HttpServletResponse resp, Long id) throws IOException {
 		SimpleEntity entity = getSimpleService().findById(id);
 
+
 		Map<String, String> values = new HashMap<String, String>();
-		values.put("id", entity.getId().toString());
-		values.put("mensagem", entity.getMensagem());
+		values.put("id", id.toString());
+		values.put("mensagem", entity == null ? "NAO ENCONTRADO" : entity.getMensagem());
 
 		getStaticFile(resp, "/show.html", values);
 	}
