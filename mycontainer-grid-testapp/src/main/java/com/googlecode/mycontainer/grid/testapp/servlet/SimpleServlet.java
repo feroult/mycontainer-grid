@@ -1,15 +1,16 @@
 package com.googlecode.mycontainer.grid.testapp.servlet;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 
 import com.googlecode.mycontainer.grid.testapp.ejb.SimpleEntity;
 import com.googlecode.mycontainer.grid.testapp.ejb.SimpleService;
@@ -30,13 +31,23 @@ public class SimpleServlet extends HttpServlet {
 			return;
 		}
 
-		int id = Integer.parseInt(last);
-		// TODO get
+		Long id = Long.valueOf(last);
+		getSimpleEntity(req, resp, id);
+	}
+
+	private void getSimpleEntity(HttpServletRequest req, HttpServletResponse resp, Long id) throws IOException {
+		SimpleEntity entity = getSimpleService().findById(id);
+
+		Map<String, String> values = new HashMap<String, String>();
+		values.put("id", entity.getId().toString());
+		values.put("mensagem", entity.getMensagem());
+
+		getStaticFile(resp, "/show.html", values);
 	}
 
 	private void getCreate(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-		getStaticFile(resp, "/create.html");
+		getStaticFile(resp, "/create.html", null);
 	}
 
 	@Override
@@ -51,30 +62,32 @@ public class SimpleServlet extends HttpServlet {
 		}
 	}
 
-	private void postCreate(HttpServletRequest req, HttpServletResponse resp) {
+	private void postCreate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String mensagem = req.getParameter("mensagem");
 		SimpleEntity entity = getSimpleService().create(mensagem);
+		resp.sendRedirect("/testapp/" + entity.getId());
 	}
 
-	private void getStaticFile(HttpServletResponse resp, String path)
+	private void getStaticFile(HttpServletResponse resp, String path, Map<String, String> values)
 			throws IOException {
+		resp.setContentType("text/html");
+		String parsedTemplate = parseTemplate(path, values);
+		resp.getWriter().print(parsedTemplate);
+	}
+
+	private String parseTemplate(String path, Map<String, String> values) throws IOException {
 		ServletContext servletContext = getServletContext();
 
-		File file = new File(servletContext.getRealPath(path));
+		String template = IOUtils.toString(servletContext.getResourceAsStream(path));
 
-		InputStream is = servletContext.getResourceAsStream(path);
-		ServletOutputStream os = resp.getOutputStream();
+		if( values != null ) {
+			for(String chave : values.keySet()) {
+				String value = values.get(chave);
+				template = template.replaceAll("\\$\\{" + chave + "\\}", value);
+			}
+		}
 
-		int length = (int) file.length();
-
-		resp.setContentType("text/html");
-		resp.setContentLength(length);
-
-		byte[] buffer = new byte[length];
-
-		is.read(buffer);
-		os.write(buffer);
-		os.flush();
+		return template;
 	}
 
 	private SimpleService getSimpleService() {

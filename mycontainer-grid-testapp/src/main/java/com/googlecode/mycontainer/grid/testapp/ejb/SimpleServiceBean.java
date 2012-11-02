@@ -13,7 +13,6 @@ public class SimpleServiceBean implements SimpleService {
 	@PersistenceContext(unitName = "test-pu")
 	private EntityManager em;
 
-
 	@Override
 	public String getHelloWorld() {
 		return "hello world";
@@ -26,6 +25,11 @@ public class SimpleServiceBean implements SimpleService {
 
 		em.persist(entity);
 		return entity;
+	}
+
+	@Override
+	public SimpleEntity findById(Long id) {
+		return em.find(SimpleEntity.class, id);
 	}
 
 }

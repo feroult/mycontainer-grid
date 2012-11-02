@@ -14,19 +14,14 @@ public class BootTests {
 	}
 
 	public void run() {
-
 		MyContainerGrid grid = new MyContainerGrid();
 
 		setupStatelessServices(grid);
-
 		setupDataSources(grid);
-
 		setupJPAs(grid);
-
 		setupWebContexts(grid);
 
 		grid.run(5);
-
 	}
 
 	private void setupWebContexts(MyContainerGrid grid) {

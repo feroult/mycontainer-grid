@@ -12,4 +12,6 @@ public interface SimpleService {
 
 	public SimpleEntity create(String mensagem);
 
+	public SimpleEntity findById(Long id);
+
 }
