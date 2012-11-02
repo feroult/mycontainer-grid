@@ -28,7 +28,7 @@ public class SimpleTest {
 
 	private void setupDriver() {
 		FirefoxBinary binary = new FirefoxBinary();
-        //binary.setEnvironmentProperty("DISPLAY", System.getProperty("xvfb.display", ":99"));
+        binary.setEnvironmentProperty("DISPLAY", System.getProperty("xvfb.display", ":99"));
 
 		driver = new FirefoxDriver(binary, null);
 		driver.manage().window().setPosition(new Point(0, 0));
