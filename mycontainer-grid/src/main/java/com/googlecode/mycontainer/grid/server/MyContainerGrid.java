@@ -12,6 +12,8 @@ import javax.naming.NamingException;
 import com.googlecode.mycontainer.datasource.DataSourceDeployer;
 import com.googlecode.mycontainer.ejb.SessionInterceptorDeployer;
 import com.googlecode.mycontainer.ejb.StatelessScannableDeployer;
+import com.googlecode.mycontainer.grid.server.setup.DataSourceSetup;
+import com.googlecode.mycontainer.grid.server.setup.JPASetup;
 import com.googlecode.mycontainer.jpa.HibernateJPADeployer;
 import com.googlecode.mycontainer.jpa.JPADeployer;
 import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
