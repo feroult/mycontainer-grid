@@ -31,14 +31,15 @@ public class SimpleTest {
 
 	private void setupDriver() {
 		FirefoxBinary binary = new FirefoxBinary();
-        binary.setEnvironmentProperty("DISPLAY", System.getProperty("xvfb.display", ":0"));
+		binary.setEnvironmentProperty("DISPLAY",
+				System.getProperty("xvfb.display", ":0"));
 
-        Proxy proxy = new Proxy();
-        proxy.setProxyAutoconfigUrl("http://localhost:8080/_mycontainergrid/partition_proxy.js");
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(CapabilityType.PROXY, proxy);        
+		Proxy proxy = new Proxy();
+		proxy.setProxyAutoconfigUrl("http://localhost:8080/_mycontainergrid/partition_proxy.js");
+		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setCapability(CapabilityType.PROXY, proxy);
 
-        driver = new FirefoxDriver(binary, null, capabilities);
+		driver = new FirefoxDriver(binary, null, capabilities);
 		driver.manage().window().setPosition(new Point(0, 0));
 		driver.manage().window().setSize(new Dimension(1920, 1080));
 	}
@@ -50,13 +51,15 @@ public class SimpleTest {
 
 	@AfterMethod
 	public void teardown() throws IOException {
-        takeSnapShot();
+		takeSnapShot();
 		driver.close();
 	}
 
 	private void takeSnapShot() throws IOException {
-		File srcFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(srcFile, new File("/tmp/gridsnapshot" + snapShotCount++ + ".png"));
+		File srcFile = ((TakesScreenshot) driver)
+				.getScreenshotAs(OutputType.FILE);
+		FileUtils.copyFile(srcFile, new File("/tmp/gridsnapshot"
+				+ snapShotCount++ + ".png"));
 	}
 
 	@Test
@@ -65,7 +68,8 @@ public class SimpleTest {
 
 		driver.navigate().to("http://partition1.grid/testapp/create");
 
-		WebElement mensagemTextArea = driver.findElement(By.id("mensagemTextArea"));
+		WebElement mensagemTextArea = driver.findElement(By
+				.id("mensagemTextArea"));
 		mensagemTextArea.sendKeys(mensagem);
 
 		WebElement sendButton = driver.findElement(By.id("sendButtom"));
