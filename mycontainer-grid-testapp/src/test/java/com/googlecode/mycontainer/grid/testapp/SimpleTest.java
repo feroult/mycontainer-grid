@@ -61,7 +61,7 @@ public class SimpleTest {
 
 	@Test
 	public void testCreate() {
-		String mensagem = "hey ow fool, i'm gonna kill you";
+		String mensagem = "hey oh fool, i'm gonna kill you";
 
 		driver.navigate().to("http://partition1.grid/testapp/create");
 
