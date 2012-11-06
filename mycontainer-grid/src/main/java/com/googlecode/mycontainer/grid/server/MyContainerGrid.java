@@ -21,6 +21,7 @@ import com.googlecode.mycontainer.kernel.deploy.ScannerDeployer;
 import com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory;
 import com.googlecode.mycontainer.web.ContextWebServer;
 import com.googlecode.mycontainer.web.FilterDesc;
+import com.googlecode.mycontainer.web.ServletDesc;
 import com.googlecode.mycontainer.web.jetty.JettyServerDeployer;
 
 public class MyContainerGrid {
@@ -130,15 +131,25 @@ public class MyContainerGrid {
 		webServer.setName("WebServer");
 
 		FilterDesc partitionSelectorFilter = new FilterDesc(PartitionSelectorFilter.class, "/*");
-
+		
 		for (String context : webContexts.keySet()) {
-			ContextWebServer webContext = webServer.createContextWebServer();
+			ContextWebServer webContext = webServer.createContextWebServer();				
 			webContext.setContext(context);
-			webContext.setResources(webContexts.get(context));
+			webContext.setResources(webContexts.get(context));				
 			webContext.getFilters().add(partitionSelectorFilter);
 		}
-
+	
+		deployHelperContext(webServer);
+		
 		webServer.deploy();
+	}
+
+	private void deployHelperContext(JettyServerDeployer webServer) {
+		ServletDesc partitionProxyServlet = new ServletDesc(PartitionProxyServlet.class, "/partition_proxy.js");
+		
+		ContextWebServer webContext = webServer.createContextWebServer();
+		webContext.setContext("/_mycontainergrid");
+		webContext.getServlets().add(partitionProxyServlet);
 	}
 
 	public void addWebContext(String context, String resources) {

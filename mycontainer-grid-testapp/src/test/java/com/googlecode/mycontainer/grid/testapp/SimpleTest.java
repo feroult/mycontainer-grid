@@ -1,9 +1,5 @@
 package com.googlecode.mycontainer.grid.testapp;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeMethod;
-import org.testng.AssertJUnit;
 import java.io.File;
 import java.io.IOException;
 
@@ -13,10 +9,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.AssertJUnit;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class SimpleTest {
 
@@ -30,7 +33,12 @@ public class SimpleTest {
 		FirefoxBinary binary = new FirefoxBinary();
         binary.setEnvironmentProperty("DISPLAY", System.getProperty("xvfb.display", ":0"));
 
-		driver = new FirefoxDriver(binary, null);
+        Proxy proxy = new Proxy();
+        proxy.setProxyAutoconfigUrl("http://localhost:8080/_mycontainergrid/partition_proxy.js");
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability(CapabilityType.PROXY, proxy);        
+
+        driver = new FirefoxDriver(binary, null, capabilities);
 		driver.manage().window().setPosition(new Point(0, 0));
 		driver.manage().window().setSize(new Dimension(1920, 1080));
 	}
@@ -53,9 +61,9 @@ public class SimpleTest {
 
 	@Test
 	public void testCreate() {
-		String mensagem = "hey ow fool, i gonna kill you";
+		String mensagem = "hey ow fool, i'm gonna kill you";
 
-		driver.navigate().to("http://partition1.localhost:8080/testapp/create");
+		driver.navigate().to("http://partition1.grid/testapp/create");
 
 		WebElement mensagemTextArea = driver.findElement(By.id("mensagemTextArea"));
 		mensagemTextArea.sendKeys(mensagem);
