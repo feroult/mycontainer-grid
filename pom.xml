@@ -12,19 +12,6 @@
 		<module>mycontainer-grid</module>
 		<module>mycontainer-grid-testapp</module>
 	</modules>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>mycontainer</id>
-			<url>http://repo.pyrata.org/release/maven2/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</pluginRepository>
-	</pluginRepositories>
 		
 </project>
 

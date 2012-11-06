@@ -1,14 +1,14 @@
 package com.googlecode.mycontainer.grid.testapp;
 
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.AssertJUnit;
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
@@ -35,12 +35,12 @@ public class SimpleTest {
 		driver.manage().window().setSize(new Dimension(1920, 1080));
 	}
 
-	@Before
+	@BeforeMethod
 	public void setup() {
 		setupDriver();
 	}
 
-	@After
+	@AfterMethod
 	public void teardown() throws IOException {
         takeSnapShot();
 		driver.close();
@@ -64,7 +64,7 @@ public class SimpleTest {
 		sendButton.click();
 
 		WebElement mensagemText = driver.findElement(By.id("mensagemText"));
-		Assert.assertEquals(mensagem, mensagemText.getText());
+		AssertJUnit.assertEquals(mensagem, mensagemText.getText());
 	}
 
 }
