@@ -1,4 +1,4 @@
-package com.googlecode.mycontainer.grid.testapp;
+package com.googlecode.mycontainer.grid.infra;
 
 import com.googlecode.mycontainer.grid.server.MyContainerGrid;
 import com.googlecode.mycontainer.grid.server.setup.HSQLDataSourceSetup;
