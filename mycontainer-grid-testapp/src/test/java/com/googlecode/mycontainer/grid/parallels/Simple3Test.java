@@ -1,4 +1,4 @@
-package com.googlecode.mycontainer.grid.testapp;
+package com.googlecode.mycontainer.grid.parallels;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,9 +21,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class SimpleTest {
+public class Simple3Test {
 
-	Logger logger = Logger.getLogger(SimpleTest.class);
+	Logger logger = Logger.getLogger(Simple1Test.class);
 
 	private FirefoxDriver driver;
 
@@ -63,9 +63,10 @@ public class SimpleTest {
 	}
 
 	@Test
-	public void testCreate() {
-		String mensagem = "hey oh fool, i'm gonna kill you";
-
+	public void testCreate() throws InterruptedException {
+		// just to slow down the tests and fell the parallels...
+		Thread.sleep(5000);
+		String mensagem = "hey ow fool, i'm gonna kill you";
 		driver.navigate().to("http://partition1.grid/testapp/create");
 
 		WebElement mensagemTextArea = driver.findElement(By
