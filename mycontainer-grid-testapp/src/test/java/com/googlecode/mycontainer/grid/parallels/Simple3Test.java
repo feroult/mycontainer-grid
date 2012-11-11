@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 
 public class Simple3Test {
 
-	Logger logger = Logger.getLogger(Simple1Test.class);
+	Logger logger = Logger.getLogger(Simple3Test.class);
 
 	private FirefoxDriver driver;
 
