@@ -2,6 +2,7 @@ package com.googlecode.mycontainer.grid.parallels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -16,7 +17,7 @@ public class MultipleWindowTest {
 		
 		List<Thread> threads = new ArrayList<Thread>(); 
 		
-		for(int i = 1; i <= 3; i++) {
+		for(int i = 1; i <= 40; i++) {
 			Runner runner = test.new Runner(i);
 			threads.add(new Thread(runner));
 		}
@@ -30,6 +31,7 @@ public class MultipleWindowTest {
 
 		private int id;
 		private FirefoxDriver driver;
+		private Random rand = new Random(System.currentTimeMillis());
 				
 		public Runner(int id) {
 			super();
@@ -53,14 +55,14 @@ public class MultipleWindowTest {
 				driver.navigate().to("http://www.google.com.br/?as_qdr=all");
 				driver.findElementById("lst-ib").sendKeys("viva la revolucion");
 				driver.findElementByName("btnK").click();
+				System.out.println("navegando " + id + " ok.");
 				//boolean ok = driver.findElementById("resultStats") != null;
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(rand.nextInt(1500));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-				System.out.println("navegando " + id + " ok.");
+				}				
 			}
 		}		
 	}
