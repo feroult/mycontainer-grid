@@ -1,4 +1,4 @@
-package com.googlecode.mycontainer.grid.parallels;
+package com.googlecode.mycontainer.grid.test.parallels;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,9 +21,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class Simple3Test {
+public class Simple2Test {
 
-	Logger logger = Logger.getLogger(Simple3Test.class);
+	Logger logger = Logger.getLogger(Simple2Test.class);
 
 	private FirefoxDriver driver;
 

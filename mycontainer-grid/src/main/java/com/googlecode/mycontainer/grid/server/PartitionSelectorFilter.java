@@ -10,7 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import com.googlecode.mycontainer.grid.util.ServiceLocator;
+import com.googlecode.mycontainer.grid.util.GridServiceLocator;
 
 public class PartitionSelectorFilter implements Filter {
 
@@ -35,7 +35,7 @@ public class PartitionSelectorFilter implements Filter {
 		String[] split = req.getServerName().split("\\.");
 
 		if (split.length > 0 && split[0].startsWith("partition")) {
-			ServiceLocator.setPartition(split[0]);
+			GridServiceLocator.setPartition(split[0]);
 		}
 	}
 }

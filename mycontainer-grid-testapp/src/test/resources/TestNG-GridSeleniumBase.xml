@@ -1,0 +1,7 @@
+<suite name="GridSeleniumBase" parallel="methods" thread-count="5" verbose="10">
+  <test name="parallels">
+    <classes>
+       <class name="com.googlecode.mycontainer.grid.test.GridSeleniumBaseTest" />
+    </classes>
+  </test>
+</suite>

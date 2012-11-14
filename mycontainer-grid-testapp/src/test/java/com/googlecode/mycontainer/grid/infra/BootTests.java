@@ -10,18 +10,19 @@ import com.googlecode.mycontainer.grid.testapp.ejb.SimpleService;
 public class BootTests {
 
 	public static void main(String[] args) {
-		new BootTests().run();
+		BootTests boot = new BootTests();
+		MyContainerGrid grid = boot.setupMyContainerGrid();
+		grid.run(5);
 	}
 
-	public void run() {
+	public MyContainerGrid setupMyContainerGrid() {
 		MyContainerGrid grid = new MyContainerGrid();
 
 		setupStatelessServices(grid);
 		setupDataSources(grid);
 		setupJPAs(grid);
 		setupWebContexts(grid);
-
-		grid.run(5);
+		return grid;
 	}
 
 	private void setupJPAs(MyContainerGrid grid) {

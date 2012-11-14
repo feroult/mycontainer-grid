@@ -1,4 +1,4 @@
-package com.googlecode.mycontainer.grid.parallels;
+package com.googlecode.mycontainer.grid.test.parallels;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,9 +7,9 @@ import javax.naming.NamingException;
 
 import com.googlecode.mycontainer.grid.server.MyContainerGrid;
 
-public abstract class ServiceLocator {
+public abstract class GridServiceLocator {
 
-	public static ThreadLocal<String> partitionHolder = new ThreadLocal<String>();
+	private static ThreadLocal<String> partitionHolder = new ThreadLocal<String>();
 
 	@SuppressWarnings("unchecked")
 	public static <T> T lookup(String jndi, Class<T> clazz) {

@@ -14,7 +14,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.googlecode.mycontainer.grid.testapp.ejb.SimpleEntity;
 import com.googlecode.mycontainer.grid.testapp.ejb.SimpleService;
-import com.googlecode.mycontainer.grid.util.ServiceLocator;
+import com.googlecode.mycontainer.grid.util.GridServiceLocator;
 
 public class SimpleServlet extends HttpServlet {
 
@@ -92,7 +92,7 @@ public class SimpleServlet extends HttpServlet {
 	}
 
 	private SimpleService getSimpleService() {
-		return ServiceLocator.lookup(SimpleService.JNDI_LOCAL,
+		return GridServiceLocator.lookup(SimpleService.JNDI_LOCAL,
 				SimpleService.class);
 	}
 
