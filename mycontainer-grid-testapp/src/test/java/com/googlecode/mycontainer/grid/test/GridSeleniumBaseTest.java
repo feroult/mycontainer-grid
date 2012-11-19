@@ -14,9 +14,8 @@ public class GridSeleniumBaseTest extends GridSeleniumBase {
 		Assert.assertEquals(getThreadCount(), 5);
 	}
 
-	@Override
 	public MyContainerGrid setupMyContainerGrid() {
 		BootTests boot = new BootTests();
-		return boot.setupMyContainerGrid();
-	}	
+		return boot.setupMyContainerGrid(getThreadCount());
+	}
 }

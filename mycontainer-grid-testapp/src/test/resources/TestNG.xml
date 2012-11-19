@@ -1,10 +1,10 @@
-<suite name="Suite1" parallel="methods" thread-count="5" verbose="10">
+<suite name="Suite1" parallel="methods" thread-count="2" verbose="10">
   <test name="parallels" preserve-order="true" >
     <classes>
        <class name="com.googlecode.mycontainer.grid.test.parallels.Simple1Test" />
-       <class name="com.googlecode.mycontainer.grid.test.parallels.Simple2Test" />
+       <!--class name="com.googlecode.mycontainer.grid.test.parallels.Simple2Test" />
        <class name="com.googlecode.mycontainer.grid.test.parallels.Simple3Test" />
-       <class name="com.googlecode.mycontainer.grid.test.parallels.Simple4Test" />
+       <class name="com.googlecode.mycontainer.grid.test.parallels.Simple4Test" -->
     </classes>
   </test>
 </suite>

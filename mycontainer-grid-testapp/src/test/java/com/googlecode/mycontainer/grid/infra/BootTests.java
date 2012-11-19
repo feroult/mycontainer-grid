@@ -11,13 +11,12 @@ public class BootTests {
 
 	public static void main(String[] args) {
 		BootTests boot = new BootTests();
-		MyContainerGrid grid = boot.setupMyContainerGrid();
-		grid.run(5);
+		MyContainerGrid grid = boot.setupMyContainerGrid(5);
+		grid.run();
 	}
 
-	public MyContainerGrid setupMyContainerGrid() {
-		MyContainerGrid grid = new MyContainerGrid();
-
+	public MyContainerGrid setupMyContainerGrid(int servers) {
+		MyContainerGrid grid = new MyContainerGrid(servers);
 		setupStatelessServices(grid);
 		setupDataSources(grid);
 		setupJPAs(grid);

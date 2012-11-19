@@ -37,39 +37,41 @@ public class MyContainerGrid {
 	@SuppressWarnings("rawtypes")
 	private List<Class> ejbs = new ArrayList<Class>();
 
-	public void run(int servers) {
-		try {
-			deploy(servers);
+	private int servers;
 
+	public MyContainerGrid(int servers){
+		this.servers=servers;
+	}
+
+	public void run() {
+		try {
+			deploy();
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void deploy(int servers) throws NamingException {
-		deployMyContainers(servers);
+	public void deploy() throws NamingException {
+		deployMyContainers();
 		deployJetty();
 	}
 
 	private void deployJetty() throws NamingException {
 		ContainerBuilder builder = createContainerBuilder("webserver-partition");
 		deployWebServer(builder);
-		builder.waitFor();
 	}
 
-	private void deployMyContainers(int servers) throws NamingException {
+	private void deployMyContainers() throws NamingException {
 		for (int serverNumber = 1; serverNumber <= servers; serverNumber++) {
 			String partition = getPartition(serverNumber);
 			ContainerBuilder builder = createContainerBuilder(partition);
-
 			// FIXME faz sentido um hook desses para todos?
 			deployVMShutdownHook(builder);
 			deployJTA(builder);
 			deployDataSources(builder, partition);
 			deployJPAs(builder, partition);
 			deployStatelessEJBs(builder);
-
 			logger.info("mycontainer-grid started - partition: " + partition);
 		}
 	}
@@ -131,22 +133,22 @@ public class MyContainerGrid {
 		webServer.setName("WebServer");
 
 		FilterDesc partitionSelectorFilter = new FilterDesc(PartitionSelectorFilter.class, "/*");
-		
+
 		for (String context : webContexts.keySet()) {
-			ContextWebServer webContext = webServer.createContextWebServer();				
+			ContextWebServer webContext = webServer.createContextWebServer();
 			webContext.setContext(context);
-			webContext.setResources(webContexts.get(context));				
+			webContext.setResources(webContexts.get(context));
 			webContext.getFilters().add(partitionSelectorFilter);
 		}
-	
+
 		deployHelperContext(webServer);
-		
+
 		webServer.deploy();
 	}
 
 	private void deployHelperContext(JettyServerDeployer webServer) {
 		ServletDesc partitionProxyServlet = new ServletDesc(PartitionProxyServlet.class, "/partition_proxy.js");
-		
+
 		ContextWebServer webContext = webServer.createContextWebServer();
 		webContext.setContext("/_mycontainergrid");
 		webContext.getServlets().add(partitionProxyServlet);
@@ -185,4 +187,11 @@ public class MyContainerGrid {
 		return serverProperties;
 	}
 
+	public List<String> getPartitionNames(){
+		List<String>partitionNames = new ArrayList<String>();
+		for (int serverNumber = 1; serverNumber <= servers; serverNumber++) {
+			partitionNames.add(getPartition(serverNumber));
+		}
+		return partitionNames;
+	}
 }
