@@ -10,15 +10,20 @@ import java.util.logging.Logger;
 import javax.naming.NamingException;
 
 import com.googlecode.mycontainer.datasource.DataSourceDeployer;
+import com.googlecode.mycontainer.ejb.MessageDrivenScannableDeployer;
 import com.googlecode.mycontainer.ejb.SessionInterceptorDeployer;
 import com.googlecode.mycontainer.ejb.StatelessScannableDeployer;
 import com.googlecode.mycontainer.grid.server.setup.DataSourceSetup;
 import com.googlecode.mycontainer.grid.server.setup.JPASetup;
+import com.googlecode.mycontainer.grid.server.setup.MailSetup;
+import com.googlecode.mycontainer.grid.server.setup.QueueSetup;
+import com.googlecode.mycontainer.jms.JMSDeployer;
 import com.googlecode.mycontainer.jpa.HibernateJPADeployer;
 import com.googlecode.mycontainer.jpa.JPADeployer;
 import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
 import com.googlecode.mycontainer.kernel.deploy.ScannerDeployer;
 import com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory;
+import com.googlecode.mycontainer.mail.MailDeployer;
 import com.googlecode.mycontainer.web.ContextWebServer;
 import com.googlecode.mycontainer.web.FilterDesc;
 import com.googlecode.mycontainer.web.ServletDesc;
@@ -33,6 +38,10 @@ public class MyContainerGrid {
 	private List<DataSourceSetup> dataSourceSetups = new ArrayList<DataSourceSetup>();
 
 	private List<JPASetup> jpaSetups = new ArrayList<JPASetup>();
+
+	private List<MailSetup>mailSetups = new ArrayList<MailSetup>();
+
+	private List<QueueSetup>queueSetups = new ArrayList<QueueSetup>();
 
 	@SuppressWarnings("rawtypes")
 	private List<Class> ejbs = new ArrayList<Class>();
@@ -72,6 +81,8 @@ public class MyContainerGrid {
 			deployDataSources(builder, partition);
 			deployJPAs(builder, partition);
 			deployStatelessEJBs(builder);
+			deployMail(builder,partition);
+			deployQueue(builder,partition);
 			logger.info("mycontainer-grid started - partition: " + partition);
 		}
 	}
@@ -79,7 +90,6 @@ public class MyContainerGrid {
 	private ContainerBuilder createContainerBuilder(String partition)
 			throws NamingException {
 		Properties serverProperties = getPartitionProperties(partition);
-
 		ContainerBuilder builder = new ContainerBuilder(serverProperties);
 		return builder;
 	}
@@ -92,7 +102,6 @@ public class MyContainerGrid {
 		SessionInterceptorDeployer sessionInterceptorDeployer = builder
 				.createDeployer(SessionInterceptorDeployer.class);
 		sessionInterceptorDeployer.deploy();
-
 		builder.deployJTA();
 	}
 
@@ -114,15 +123,32 @@ public class MyContainerGrid {
 		}
 	}
 
+	private void deployMail(ContainerBuilder builder, String partition) {
+		for (MailSetup setup : mailSetups) {
+			MailDeployer mail = builder.createDeployer(MailDeployer.class);
+			setup.set(mail, partition);
+			mail.deploy();
+		}
+	}
+
+	private void deployQueue(ContainerBuilder builder, String partition) {
+		JMSDeployer jmsDeployer = builder.createDeployer(JMSDeployer.class);
+		jmsDeployer.setUri("broker:(vm://x" + partition + ")");
+		jmsDeployer.setConnectionUri("vm://x" + partition);
+		for (QueueSetup setup : queueSetups) {
+			jmsDeployer.createQueue(setup.getName());
+		}
+		jmsDeployer.deploy();
+	}
+
 	@SuppressWarnings("rawtypes")
 	private void deployStatelessEJBs(ContainerBuilder builder) {
 		ScannerDeployer scanner = builder.createDeployer(ScannerDeployer.class);
 		scanner.add(new StatelessScannableDeployer());
-
+		scanner.add(new MessageDrivenScannableDeployer());
 		for (Class clazz : ejbs) {
 			scanner.scan(clazz);
 		}
-
 		scanner.deploy();
 	}
 
@@ -131,24 +157,19 @@ public class MyContainerGrid {
 				.createDeployer(JettyServerDeployer.class);
 		webServer.bindPort(8080);
 		webServer.setName("WebServer");
-
 		FilterDesc partitionSelectorFilter = new FilterDesc(PartitionSelectorFilter.class, "/*");
-
 		for (String context : webContexts.keySet()) {
 			ContextWebServer webContext = webServer.createContextWebServer();
 			webContext.setContext(context);
 			webContext.setResources(webContexts.get(context));
 			webContext.getFilters().add(partitionSelectorFilter);
 		}
-
 		deployHelperContext(webServer);
-
 		webServer.deploy();
 	}
 
 	private void deployHelperContext(JettyServerDeployer webServer) {
 		ServletDesc partitionProxyServlet = new ServletDesc(PartitionProxyServlet.class, "/partition_proxy.js");
-
 		ContextWebServer webContext = webServer.createContextWebServer();
 		webContext.setContext("/_mycontainergrid");
 		webContext.getServlets().add(partitionProxyServlet);
@@ -171,17 +192,23 @@ public class MyContainerGrid {
 		jpaSetups.add(setup);
 	}
 
+	public void addMailSetup(MailSetup setup){
+		mailSetups.add(setup);
+	}
+
+	public void addQueueSetup(QueueSetup setup){
+		queueSetups.add(setup);
+	}
+
 	private static String getPartition(int serverNumber) {
 		return "partition" + serverNumber;
 	}
 
 	public static Properties getPartitionProperties(String partition) {
 		Properties serverProperties = new Properties();
-
 		serverProperties
 				.setProperty("java.naming.factory.initial",
 						"com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory");
-
 		serverProperties.setProperty(
 				MyContainerContextFactory.CONTAINER_PARTITION, partition);
 		return serverProperties;

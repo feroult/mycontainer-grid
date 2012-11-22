@@ -6,7 +6,7 @@ import com.googlecode.mycontainer.jpa.JPAInfoBuilder;
 
 public class HSQLJPASetup extends JPASetup {
 
-	protected void setupCustomProperties(JPAInfoBuilder info) {
+	public void setupCustomProperties(JPAInfoBuilder info) {
 		Properties props = info.getProperties();
 		props.setProperty("hibernate.dialect",
 				"org.hibernate.dialect.HSQLDialect");

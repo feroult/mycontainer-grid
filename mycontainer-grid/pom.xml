@@ -34,7 +34,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-        </dependency>	
+        </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -62,6 +62,14 @@
 		<dependency>
 			<groupId>com.googlecode.mycontainer</groupId>
 			<artifactId>mycontainer-servlet-commons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.mycontainer</groupId>
+			<artifactId>mycontainer-mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.mycontainer</groupId>
+			<artifactId>mycontainer-jms</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.hsqldb</groupId>
@@ -154,7 +162,7 @@
               <groupId>org.testng</groupId>
               <artifactId>testng</artifactId>
               <version>6.1.1</version>
-            </dependency>		
+            </dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-jdk14</artifactId>
@@ -199,6 +207,16 @@
 			<dependency>
 				<groupId>com.googlecode.mycontainer</groupId>
 				<artifactId>mycontainer-commons</artifactId>
+				<version>${mycontainer.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.mycontainer</groupId>
+				<artifactId>mycontainer-mail</artifactId>
+				<version>${mycontainer.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.mycontainer</groupId>
+				<artifactId>mycontainer-jms</artifactId>
 				<version>${mycontainer.version}</version>
 			</dependency>
 			<dependency>
