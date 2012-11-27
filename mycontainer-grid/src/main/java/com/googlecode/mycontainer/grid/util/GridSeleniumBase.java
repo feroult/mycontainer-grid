@@ -101,10 +101,6 @@ public abstract class GridSeleniumBase {
 		return driver;
 	}
 
-	public static void importDBScript() {
-		DatabaseHelper.importFiles(MyContainerServer.getCtx(), DS, ARQUIVOS_CARGA_DADOS);
-	}
-
 	public void navegarNaPagina(String url) {
 		String urlToNavigate = "http://"+webDriverHolder.get().getPartition()+".grid/"+url;
 		logger.info("Navigating to {} " + urlToNavigate);
