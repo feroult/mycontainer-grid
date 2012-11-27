@@ -44,12 +44,12 @@ public class Simple2Test {
 		driver.manage().window().setSize(new Dimension(1920, 1080));
 	}
 
-	@BeforeMethod
+	//@BeforeMethod
 	public void setup() {
 		setupDriver();
 	}
 
-	@AfterMethod
+	//@AfterMethod
 	public void teardown() throws IOException {
 		takeSnapShot();
 		driver.close();
@@ -62,7 +62,7 @@ public class Simple2Test {
 				+ snapShotCount++ + ".png"));
 	}
 
-	@Test
+	//@Test
 	public void testCreate() throws InterruptedException {
 		// just to slow down the tests and fell the parallels...
 		Thread.sleep(5000);

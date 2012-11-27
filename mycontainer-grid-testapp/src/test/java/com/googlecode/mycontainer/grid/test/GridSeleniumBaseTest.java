@@ -11,7 +11,7 @@ public class GridSeleniumBaseTest extends GridSeleniumBase {
 
 	@Test
 	public void setupTest() {
-		Assert.assertEquals(getThreadCount(), 5);
+		Assert.assertEquals(getThreadCount(), 2);
 	}
 
 	public MyContainerGrid setupMyContainerGrid() {
