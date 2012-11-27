@@ -1,5 +1,7 @@
 package com.googlecode.mycontainer.grid.util;
 
+import javax.persistence.EntityManager;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -88,7 +90,6 @@ public abstract class GridSeleniumBase {
 		FirefoxBinary binary = new FirefoxBinary();
 		binary.setEnvironmentProperty("DISPLAY",
 				System.getProperty("xvfb.display", ":0"));
-
 		Proxy proxy = new Proxy();
 		proxy.setProxyAutoconfigUrl("http://localhost:8080/_mycontainergrid/partition_proxy.js");
 		DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -100,10 +101,19 @@ public abstract class GridSeleniumBase {
 		return driver;
 	}
 
+	public static void importDBScript() {
+		DatabaseHelper.importFiles(MyContainerServer.getCtx(), DS, ARQUIVOS_CARGA_DADOS);
+	}
+
 	public void navegarNaPagina(String url) {
 		String urlToNavigate = "http://"+webDriverHolder.get().getPartition()+".grid/"+url;
 		logger.info("Navigating to {} " + urlToNavigate);
 		webDriverHolder.get().getWebDriver().navigate().to(urlToNavigate);
+	}
+
+
+	public EntityManager buscarEntityManager() {
+		return (EntityManager) GridServiceLocator.lookup("confidence-pu",EntityManager.class);
 	}
 
 }

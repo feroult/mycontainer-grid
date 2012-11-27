@@ -28,7 +28,7 @@ public abstract class GridServiceLocator {
 		return partitionHolder.get();
 	}
 
-	private static Properties getServerProperties() {
+	public static Properties getServerProperties() {
 		String partition = getPartition();
 		if (partition != null) {
 			return MyContainerGrid.getPartitionProperties(partition);
