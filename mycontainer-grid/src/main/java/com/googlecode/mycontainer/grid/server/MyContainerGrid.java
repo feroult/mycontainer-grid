@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.naming.NamingException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.mycontainer.datasource.DataSourceDeployer;
 import com.googlecode.mycontainer.ejb.MessageDrivenScannableDeployer;
@@ -21,6 +23,7 @@ import com.googlecode.mycontainer.jms.JMSDeployer;
 import com.googlecode.mycontainer.jpa.HibernateJPADeployer;
 import com.googlecode.mycontainer.jpa.JPADeployer;
 import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
+import com.googlecode.mycontainer.kernel.deploy.NamingAliasDeployer;
 import com.googlecode.mycontainer.kernel.deploy.ScannerDeployer;
 import com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory;
 import com.googlecode.mycontainer.mail.MailDeployer;
@@ -31,7 +34,7 @@ import com.googlecode.mycontainer.web.jetty.JettyServerDeployer;
 
 public class MyContainerGrid {
 
-	Logger logger = Logger.getLogger(MyContainerGrid.class.getName());
+	Logger logger = LoggerFactory.getLogger(MyContainerGrid.class.getName());
 
 	private Map<String, String> webContexts = new HashMap<String, String>();
 
@@ -80,9 +83,9 @@ public class MyContainerGrid {
 			deployJTA(builder);
 			deployDataSources(builder, partition);
 			deployJPAs(builder, partition);
+			deployQueue(builder,partition);
 			deployStatelessEJBs(builder);
 			deployMail(builder,partition);
-			deployQueue(builder,partition);
 			logger.info("mycontainer-grid started - partition: " + partition);
 		}
 	}
@@ -143,6 +146,10 @@ public class MyContainerGrid {
 
 	@SuppressWarnings("rawtypes")
 	private void deployStatelessEJBs(ContainerBuilder builder) {
+		NamingAliasDeployer alias = builder.createDeployer(NamingAliasDeployer.class);
+		alias.setDestination("resource/javax/jms/ConnectionFactory");
+		alias.setName("ConnectionFactory");
+		alias.deploy();
 		ScannerDeployer scanner = builder.createDeployer(ScannerDeployer.class);
 		scanner.add(new StatelessScannableDeployer());
 		scanner.add(new MessageDrivenScannableDeployer());
