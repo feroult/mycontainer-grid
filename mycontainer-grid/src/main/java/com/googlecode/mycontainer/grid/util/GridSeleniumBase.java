@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.CapabilityType;
@@ -20,7 +21,7 @@ import com.googlecode.mycontainer.grid.server.MyContainerGrid;
 
 public abstract class GridSeleniumBase {
 
-	Logger logger = Logger.getLogger(GridSeleniumBase.class);
+	private static Logger logger = Logger.getLogger(GridSeleniumBase.class);
 
 	private int threadCount;
 
@@ -101,10 +102,10 @@ public abstract class GridSeleniumBase {
 		return driver;
 	}
 
-	public void navegarNaPagina(String url) {
-		String urlToNavigate = "http://"+webDriverHolder.get().getPartition()+".grid/"+url;
+	public static void navegarNaPagina(WebDriver driver , String partition, String url) {
+		String urlToNavigate = "http://"+partition+".grid/"+url;
 		logger.info("Navigating to {} " + urlToNavigate);
-		webDriverHolder.get().getWebDriver().navigate().to(urlToNavigate);
+		driver.navigate().to(urlToNavigate);
 	}
 
 

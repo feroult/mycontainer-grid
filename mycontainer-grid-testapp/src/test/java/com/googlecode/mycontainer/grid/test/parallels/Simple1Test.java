@@ -17,7 +17,7 @@ public class Simple1Test extends GridSeleniumBase{
 	public void testCreate() throws InterruptedException {
 		Thread.sleep( 5000 );
 		String mensagem = this.getDriver().getPartition();
-		this.navegarNaPagina("testapp/create");
+		navegarNaPagina(this.getDriver().getWebDriver(), this.getDriver().getPartition(), "testapp/create");
 		WebElement mensagemTextArea = this.getDriver().getWebDriver().findElement(By.id("mensagemTextArea"));
 		mensagemTextArea.sendKeys(mensagem);
 		WebElement sendButton = this.getDriver().getWebDriver().findElement(By.id("sendButtom"));
