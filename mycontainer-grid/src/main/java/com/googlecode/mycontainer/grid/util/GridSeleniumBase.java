@@ -102,10 +102,10 @@ public abstract class GridSeleniumBase {
 		return driver;
 	}
 
-	public static void navegarNaPagina(WebDriver driver , String partition, String url) {
-		String urlToNavigate = "http://"+partition+".grid/"+url;
+	public void navegarNaPagina(String url) {
+		String urlToNavigate = "http://"+this.getDriver().getPartition()+".grid/"+url;
 		logger.info("Navigating to {} " + urlToNavigate);
-		driver.navigate().to(urlToNavigate);
+		this.getDriver().getWebDriver().navigate().to(urlToNavigate);
 	}
 
 

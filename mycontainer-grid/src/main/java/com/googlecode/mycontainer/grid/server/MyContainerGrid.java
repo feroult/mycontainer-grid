@@ -23,6 +23,7 @@ import com.googlecode.mycontainer.jms.JMSDeployer;
 import com.googlecode.mycontainer.jpa.HibernateJPADeployer;
 import com.googlecode.mycontainer.jpa.JPADeployer;
 import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
+import com.googlecode.mycontainer.kernel.deploy.MyTransactionManagerDeployer;
 import com.googlecode.mycontainer.kernel.deploy.NamingAliasDeployer;
 import com.googlecode.mycontainer.kernel.deploy.ScannerDeployer;
 import com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory;
