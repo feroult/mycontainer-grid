@@ -13,6 +13,8 @@ public abstract class JPASetup {
 
 	private String dataSource;
 
+	private Class persistenceUnitRootUrl;
+
 	@SuppressWarnings("rawtypes")
 	private List<Class> ejbs = new ArrayList<Class>();
 
@@ -30,6 +32,14 @@ public abstract class JPASetup {
 
 	public void setDataSource(String dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	public Class getPersistenceUnitRootUrl() {
+		return persistenceUnitRootUrl;
+	}
+
+	public void setPersistenceUnitRootUrl(Class persistenceUnitRootUrl) {
+		this.persistenceUnitRootUrl = persistenceUnitRootUrl;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -67,7 +77,12 @@ public abstract class JPASetup {
 	private void setupEJBs(JPAInfoBuilder info) {
 		for (Class clazz : ejbs) {
 			info.addJarFileUrl(clazz);
-			info.setPersistenceUnitRootUrl(clazz);
+			//info.setPersistenceUnitRootUrl(clazz);
+
 		}
+		if (this.getPersistenceUnitRootUrl()!=null) {
+			info.setPersistenceUnitRootUrl(this.getPersistenceUnitRootUrl());
+		}
+
 	}
 }

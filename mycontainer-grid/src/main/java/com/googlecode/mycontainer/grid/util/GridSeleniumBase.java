@@ -55,7 +55,9 @@ public abstract class GridSeleniumBase {
 	}
 
 	private void setupGrid(ITestContext context) {
-		setThreadCount(context.getSuite().getXmlSuite().getThreadCount());
+		//FIXME
+		//setThreadCount(context.getSuite().getXmlSuite().getThreadCount());
+		setThreadCount(1);
 	}
 
 	private void startGrid() {
