@@ -1,12 +1,13 @@
 package com.googlecode.mycontainer.grid.util;
 
+import java.io.File;
+
 import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.CapabilityType;
@@ -29,11 +30,10 @@ public abstract class GridSeleniumBase {
 
 	protected ThreadLocal<GridWebDriver> webDriverHolder = new ThreadLocal<GridWebDriver>();
 
-	private WebDriverPool pool;
+	private static WebDriverPool pool= new WebDriverPool();
 
 	@BeforeSuite(alwaysRun = true)
 	public void setupBeforeSuite(ITestContext context) {
-		pool= new WebDriverPool();
 		setupGrid(context);
 		startGrid();
 		startWebDrivers();
@@ -89,6 +89,10 @@ public abstract class GridSeleniumBase {
 
 	private FirefoxDriver startWebDriver() {
 		FirefoxBinary binary = new FirefoxBinary();
+		if(System.getProperty("firefox-driver-bin")!= null){
+			System.out.println("Firefox bin");
+			binary = new FirefoxBinary(new File(System.getProperty("firefox-driver-bin")));
+		}
 		binary.setEnvironmentProperty("DISPLAY",
 				System.getProperty("xvfb.display", ":0"));
 		Proxy proxy = new Proxy();
