@@ -69,14 +69,14 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<parallel>${parallel}</parallel>
-					<threadCount>${threadCount}</threadCount>
-					<includes>
-						<include>**/*Test.java</include>
-					</includes>
+					<forkMode>once</forkMode>
+					<argLine>-Xms1024m -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=256m -Dfile.encoding=ISO-8859-1</argLine>
+					<childDelegation>false</childDelegation>
+					<suiteXmlFiles>
+						<suiteXmlFile>src/test/resources/TestNG-GridSeleniumBase.xml</suiteXmlFile>
+					</suiteXmlFiles>
 				</configuration>
 			</plugin>
 			<plugin>
