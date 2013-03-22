@@ -17,13 +17,13 @@ import com.googlecode.mycontainer.ejb.SessionInterceptorDeployer;
 import com.googlecode.mycontainer.ejb.StatelessScannableDeployer;
 import com.googlecode.mycontainer.grid.server.setup.DataSourceSetup;
 import com.googlecode.mycontainer.grid.server.setup.JPASetup;
+import com.googlecode.mycontainer.grid.server.setup.Log4JSetup;
 import com.googlecode.mycontainer.grid.server.setup.MailSetup;
 import com.googlecode.mycontainer.grid.server.setup.QueueSetup;
 import com.googlecode.mycontainer.jms.JMSDeployer;
 import com.googlecode.mycontainer.jpa.HibernateJPADeployer;
 import com.googlecode.mycontainer.jpa.JPADeployer;
 import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
-import com.googlecode.mycontainer.kernel.deploy.MyTransactionManagerDeployer;
 import com.googlecode.mycontainer.kernel.deploy.NamingAliasDeployer;
 import com.googlecode.mycontainer.kernel.deploy.ScannerDeployer;
 import com.googlecode.mycontainer.kernel.naming.MyContainerContextFactory;
@@ -76,8 +76,12 @@ public class MyContainerGrid {
 	}
 
 	private void deployMyContainers() throws NamingException {
+		
+		new Log4JSetup().run();
+		
 		for (int serverNumber = 1; serverNumber <= servers; serverNumber++) {
 			String partition = getPartition(serverNumber);
+					
 			ContainerBuilder builder = createContainerBuilder(partition);
 			// FIXME faz sentido um hook desses para todos?
 			deployVMShutdownHook(builder);

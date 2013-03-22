@@ -23,26 +23,30 @@
 	</properties>
 
 	<dependencies>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-server</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-server</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>com.googlecode.mycontainer</groupId>
 			<artifactId>mycontainer-web</artifactId>
@@ -141,38 +145,43 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-	<!--scm> <connection>scm:svn:http://sharedlabs.fuweweu.com/svn/trunk/voidrepo/voidrepo-gae-web</connection>
-		<developerConnection>scm:svn:http://sharedlabs.fuweweu.com/svn/trunk/voidrepo/voidrepo-gae-web</developerConnection>
-		<url>http://sharedlabs.fuweweu.com/svn/trunk/voidrepo/voidrepo-gae-web</url>
+	<!--scm> <connection>scm:svn:http://sharedlabs.fuweweu.com/svn/trunk/voidrepo/voidrepo-gae-web</connection> 
+		<developerConnection>scm:svn:http://sharedlabs.fuweweu.com/svn/trunk/voidrepo/voidrepo-gae-web</developerConnection> 
+		<url>http://sharedlabs.fuweweu.com/svn/trunk/voidrepo/voidrepo-gae-web</url> 
 		</scm -->
 
 	<dependencyManagement>
 		<dependencies>
-            <dependency>
-                <groupId>org.seleniumhq.selenium</groupId>
-                <artifactId>selenium-java</artifactId>
-                <version>2.25.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.seleniumhq.selenium</groupId>
-                <artifactId>selenium-server</artifactId>
-                <version>2.25.0</version>
-            </dependency>
-            <dependency>
-              <groupId>org.testng</groupId>
-              <artifactId>testng</artifactId>
-              <version>6.1.1</version>
-            </dependency>
 			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-jdk14</artifactId>
-				<version>1.6.1</version>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-java</artifactId>
+				<version>2.25.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-server</artifactId>
+				<version>2.25.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<version>6.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>1.6.1</version>
 			</dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.6.1</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.14</version>
+            </dependency>			
 			<dependency>
 				<groupId>com.googlecode.mycontainer</groupId>
 				<artifactId>mycontainer-web</artifactId>
