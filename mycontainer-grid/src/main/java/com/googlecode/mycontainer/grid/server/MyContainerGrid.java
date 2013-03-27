@@ -174,7 +174,7 @@ public class MyContainerGrid {
 			ContextWebServer webContext = webServer.createContextWebServer();
 			webContext.setContext(context);
 			webContext.setResources(webContexts.get(context));
-			webContext.getFilters().add(partitionSelectorFilter);
+			webContext.getFilters().add(0, partitionSelectorFilter);			
 		}
 		deployHelperContext(webServer);
 		webServer.deploy();
