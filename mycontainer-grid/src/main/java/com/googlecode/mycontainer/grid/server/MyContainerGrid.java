@@ -76,12 +76,12 @@ public class MyContainerGrid {
 	}
 
 	private void deployMyContainers() throws NamingException {
-		
+
 		new Log4JSetup().run();
-		
+
 		for (int serverNumber = 1; serverNumber <= servers; serverNumber++) {
 			String partition = getPartition(serverNumber);
-					
+
 			ContainerBuilder builder = createContainerBuilder(partition);
 			// FIXME faz sentido um hook desses para todos?
 			deployVMShutdownHook(builder);
@@ -174,7 +174,7 @@ public class MyContainerGrid {
 			ContextWebServer webContext = webServer.createContextWebServer();
 			webContext.setContext(context);
 			webContext.setResources(webContexts.get(context));
-			webContext.getFilters().add(0, partitionSelectorFilter);			
+			webContext.getFilters().add(partitionSelectorFilter);
 		}
 		deployHelperContext(webServer);
 		webServer.deploy();
