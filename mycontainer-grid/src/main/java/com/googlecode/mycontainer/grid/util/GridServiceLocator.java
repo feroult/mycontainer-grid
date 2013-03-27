@@ -14,10 +14,14 @@ public abstract class GridServiceLocator {
 	@SuppressWarnings("unchecked")
 	public static <T> T lookup(String jndi, Class<T> clazz) {
 		try {
-			return (T) new InitialContext(getServerProperties()).lookup(jndi);
+			return (T) getInitialContext().lookup(jndi);
 		} catch (NamingException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static InitialContext getInitialContext() throws NamingException {
+		return new InitialContext(getServerProperties());
 	}
 
 	public static void setPartition(String partition) {
