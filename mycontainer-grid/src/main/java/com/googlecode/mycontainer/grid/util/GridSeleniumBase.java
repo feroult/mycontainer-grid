@@ -30,7 +30,7 @@ public abstract class GridSeleniumBase {
 
 	private MyContainerGrid grid;
 
-	protected ThreadLocal<GridWebDriver> webDriverHolder = new ThreadLocal<GridWebDriver>();
+	protected static ThreadLocal<GridWebDriver> webDriverHolder = new ThreadLocal<GridWebDriver>();
 
 	private static WebDriverPool pool= new WebDriverPool();
 
@@ -67,7 +67,7 @@ public abstract class GridSeleniumBase {
 
 	public abstract MyContainerGrid setupMyContainerGrid();
 
-	public GridWebDriver getDriver() {
+	public static GridWebDriver getDriver() {
 		return webDriverHolder.get();
 	}
 
@@ -146,9 +146,9 @@ public abstract class GridSeleniumBase {
 	}
 
 	public void navegarNaPagina(String url) {
-		String urlToNavigate = "http://"+this.getDriver().getPartition()+".grid/"+url;
+		String urlToNavigate = "http://"+getDriver().getPartition()+".grid/"+url;
 		logger.info("Navigating to {} " + urlToNavigate);
-		this.getDriver().getWebDriver().navigate().to(urlToNavigate);
+		getDriver().getWebDriver().navigate().to(urlToNavigate);
 	}
 
 
