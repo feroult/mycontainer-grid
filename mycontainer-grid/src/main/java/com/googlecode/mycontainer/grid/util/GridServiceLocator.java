@@ -31,6 +31,13 @@ public abstract class GridServiceLocator {
 	public static String getPartition() {
 		return partitionHolder.get();
 	}
+	
+	public static String getPartitionSafe() {
+		if( getPartition() == null ) {
+			return "";
+		}
+		return getPartition();
+	}
 
 	public static Properties getServerProperties() {
 		String partition = getPartition();
