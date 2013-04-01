@@ -1,6 +1,7 @@
 package com.googlecode.mycontainer.grid.util;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.persistence.EntityManager;
 
@@ -10,6 +11,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestContext;
@@ -88,22 +90,59 @@ public abstract class GridSeleniumBase {
 	}
 
 	private FirefoxDriver startWebDriver() {
-		FirefoxBinary binary = new FirefoxBinary();
-		if(System.getProperty("firefox-driver-bin")!= null){
-			System.out.println("Firefox bin");
-			binary = new FirefoxBinary(new File(System.getProperty("firefox-driver-bin")));
+		FirefoxBinary binary = configureFirefoxBinary();		
+		DesiredCapabilities capabilities = configureDesiredCapabilites();
+		FirefoxProfile profile = configureFirefoxProfile();		
+		
+		FirefoxDriver driver = new FirefoxDriver(binary, profile, capabilities);
+		driver.manage().window().setPosition(new Point(0, 0));
+		driver.manage().window().setSize(new Dimension(1920, 1080));
+		return driver;
+	}
+
+	private FirefoxProfile configureFirefoxProfile() {		
+		FirefoxProfile profile = new FirefoxProfile();
+	
+		if (System.getProperty("firebug.path") != null) {
+			try {
+				profile.addExtension(new File(System.getProperty("firebug.path")));
+			} catch (IOException e) {			
+				throw new RuntimeException(e);
+			}
+			
+			// TODO extract from file name or get firebug version from argument 
+		    profile.setPreference("extensions.firebug.currentVersion", "1.11.2"); 
+		    profile.setPreference("extensions.firebug.onByDefault", true);
+		    profile.setPreference("extensions.firebug.allPagesActivation", "on"); 
+		    profile.setPreference("extensions.firebug.addonBarOpened", true); 
+		    profile.setPreference("extensions.firebug.defaultPanelName", "net");
+		    profile.setPreference("extensions.firebug.net.enableSites", true);
+		    profile.setPreference("extensions.firebug.net.persistent", true);			
 		}
-		binary.setEnvironmentProperty("DISPLAY",
-				System.getProperty("xvfb.display", ":0"));
+	
+		
+		
+		return profile;
+	}
+
+	private DesiredCapabilities configureDesiredCapabilites() {
 		Proxy proxy = new Proxy();
 		proxy.setProxyAutoconfigUrl("http://localhost:8080/_mycontainergrid/partition_proxy.js");
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability(CapabilityType.PROXY, proxy);
+		return capabilities;
+	}
 
-		FirefoxDriver driver = new FirefoxDriver(binary, null, capabilities);
-		driver.manage().window().setPosition(new Point(0, 0));
-		driver.manage().window().setSize(new Dimension(1920, 1080));
-		return driver;
+	private FirefoxBinary configureFirefoxBinary() {
+		FirefoxBinary binary = new FirefoxBinary();
+		if (System.getProperty("firefox-driver-bin") != null) {
+			System.out.println("Firefox bin");
+			binary = new FirefoxBinary(new File(
+					System.getProperty("firefox-driver-bin")));
+		}
+		binary.setEnvironmentProperty("DISPLAY",
+				System.getProperty("xvfb.display", ":0"));
+		return binary;
 	}
 
 	public void navegarNaPagina(String url) {
